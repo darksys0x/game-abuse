@@ -8,10 +8,14 @@
 //140 - f0 = offsie of gun = 1
 struct Player
 {
-    char padding[0xEC];
-    DWORD health;
-    char padding2[0x50];
-    DWORD gun;
+    char padding[0xEC]; // ofset = 0
+    DWORD health; // offset = 0xEC
+    char padding2[0x2c]; // offset = 0xF0
+    DWORD firearmStore; // offset = 0x11C
+    char padding3[0x20]; 
+    DWORD gun; // offset = 0x140
+   
+ 
     
 
 
@@ -36,7 +40,7 @@ void healthAddress() {
         printf("get Bases Address Of health\n");
         DWORD objctAddress = *(DWORD*)((DWORD)baseAddressOf_exe + 0x187C0C);
         Player* p = (Player*)objctAddress;
-        p->health = 0x64;
+        p->health = 0x14;
         printf("health has been changed to = %u\n", p->health);
     }
 }
@@ -52,7 +56,17 @@ void DisplayConsole() {
 }
 
 
-
+void firearmStore() {
+    HMODULE baseAddress = GetModuleHandle(L"xxx.exe");
+    if (baseAddress) {
+        printf("Get firearmStore address = %p\n", baseAddress);
+        DWORD objectAddress = *(DWORD*)((DWORD)baseAddress + 0x17B0B8);
+        //*(DWORD*)(objectAddress + 0x11C) = 1000;
+        Player* p = (Player*)objectAddress;
+        p->firearmStore = 0x3E8;
+        printf("stor change %u\n", p->firearmStore);
+    }
+}
 
 
 BOOL APIENTRY DllMain(HMODULE hModule,
@@ -67,6 +81,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
         DisplayConsole();
         theGun();
         healthAddress();
+        firearmStore();
 
         break;
     }
